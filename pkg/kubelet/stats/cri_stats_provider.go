@@ -388,6 +388,11 @@ func (p *criStatsProvider) ListPodCPUAndMemoryStats(ctx context.Context) ([]stat
 
 	result := make([]statsapi.PodStats, 0, len(podSandboxMap))
 	if p.podAndContainerStatsFromCRI {
+		// fsIDtoInfo is a map from filesystem id to its stats. This will be used
+		// as a cache to avoid querying cAdvisor for the filesystem stats with the
+		// same filesystem id many times.
+		//fsIDtoInfo := make(map[runtimeapi.FilesystemIdentifier]*cadvisorapiv2.FsInfo)
+		//rootFsInfo, err := p.cadvisor.RootFsInfo()
 		criSandboxStats, err := p.runtimeService.ListPodSandboxStats(ctx, &runtimeapi.PodSandboxStatsFilter{})
 		// Call succeeded
 		if err == nil {
