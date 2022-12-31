@@ -17,8 +17,6 @@ limitations under the License.
 package cadvisor
 
 import (
-	"strings"
-
 	cadvisorapi "github.com/google/cadvisor/info/v1"
 	cadvisorapi2 "github.com/google/cadvisor/info/v2"
 	"k8s.io/api/core/v1"
@@ -73,5 +71,6 @@ func EphemeralStorageCapacityFromFsInfo(info cadvisorapi2.FsInfo) v1.ResourceLis
 // be removed. Related issue:
 // https://github.com/kubernetes/kubernetes/issues/51798
 func UsingLegacyCadvisorStats(runtimeEndpoint string) bool {
-	return strings.HasSuffix(runtimeEndpoint, CrioSocketSuffix)
+	//return strings.HasSuffix(runtimeEndpoint, CrioSocketSuffix)
+	return false
 }
