@@ -1,5 +1,5 @@
-//go:build !linux && !windows && !freebsd
-// +build !linux,!windows,!freebsd
+//go:build freebsd
+// +build freebsd
 
 /*
 Copyright 2014 The Kubernetes Authors.
@@ -43,13 +43,13 @@ func NewNSEnter(mounter mount.Interface, ne *nsenter.Nsenter, rootDir string) In
 }
 
 func (sp *subpath) PrepareSafeSubpath(subPath Subpath) (newHostPath string, cleanupAction func(), err error) {
-	return subPath.Path, nil, errUnsupported
+	return subPath.Path, nil, errors.New("util/subpath.PrepareSafeSubpath on this platform is not supported")
 }
 
 func (sp *subpath) CleanSubPaths(podDir string, volumeName string) error {
-	return errUnsupported
+	return nil
 }
 
 func (sp *subpath) SafeMakeDir(pathname string, base string, perm os.FileMode) error {
-	return errUnsupported
+	return errors.New("util/subpath.SafeMakeDir on this platform is not supported")
 }
