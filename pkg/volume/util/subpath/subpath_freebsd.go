@@ -1,4 +1,4 @@
-//go:build !linux && !windows && !freebsd
+//go:build freebsd
 
 /*
 Copyright 2014 The Kubernetes Authors.
@@ -23,6 +23,7 @@ import (
 	"os"
 
 	"k8s.io/mount-utils"
+	"k8s.io/utils/nsenter"
 )
 
 type subpath struct{}
@@ -34,14 +35,20 @@ func New(mount.Interface) Interface {
 	return &subpath{}
 }
 
+// NewNSEnter is to satisfy the compiler for having NewSubpathNSEnter exist for all
+// OS choices. however, NSEnter is only valid on Linux
+func NewNSEnter(mounter mount.Interface, ne *nsenter.Nsenter, rootDir string) Interface {
+	return nil
+}
+
 func (sp *subpath) PrepareSafeSubpath(subPath Subpath) (newHostPath string, cleanupAction func(), err error) {
-	return subPath.Path, nil, errUnsupported
+	return subPath.Path, nil, errors.New("util/subpath.PrepareSafeSubpath on this platform is not supported")
 }
 
 func (sp *subpath) CleanSubPaths(podDir string, volumeName string) error {
-	return errUnsupported
+	return nil
 }
 
 func (sp *subpath) SafeMakeDir(pathname string, base string, perm os.FileMode) error {
-	return errUnsupported
+	return errors.New("util/subpath.SafeMakeDir on this platform is not supported")
 }
