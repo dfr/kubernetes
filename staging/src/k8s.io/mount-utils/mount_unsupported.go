@@ -1,4 +1,4 @@
-//go:build !linux && !windows
+//go:build !linux && !windows && !freebsd
 
 /*
 Copyright 2014 The Kubernetes Authors.
