@@ -276,6 +276,11 @@ func (p *criStatsProvider) ListPodCPUAndMemoryStats(ctx context.Context) ([]stat
 
 	result := make([]statsapi.PodStats, 0, len(podSandboxMap))
 	if p.podAndContainerStatsFromCRI {
+		// fsIDtoInfo is a map from filesystem id to its stats. This will be used
+		// as a cache to avoid querying cAdvisor for the filesystem stats with the
+		// same filesystem id many times.
+		fsIDtoInfo := make(map[runtimeapi.FilesystemIdentifier]*cadvisorapiv2.FsInfo)
+		rootFsInfo, err := p.cadvisor.RootFsInfo()
 		criSandboxStats, err := p.runtimeService.ListPodSandboxStats(ctx, &runtimeapi.PodSandboxStatsFilter{})
 		// Call succeeded
 		if err == nil {
@@ -285,6 +290,18 @@ func (p *criStatsProvider) ListPodCPUAndMemoryStats(ctx context.Context) ([]stat
 					continue
 				}
 				ps := buildPodStats(podSandbox)
+				for _, criContainerStat := range criSandboxStat.Linux.Containers {
+					container, found := containerMap[criContainerStat.Attributes.Id]
+					if !found {
+						continue
+					}
+					// Fill available stats for full set of required pod stats
+					cs, err := p.makeContainerStats(criContainerStat, container, &rootFsInfo, fsIDtoInfo, podSandbox.GetMetadata(), false)
+					if err != nil {
+						return nil, fmt.Errorf("make container stats: %w", err)
+					}
+					ps.Containers = append(ps.Containers, *cs)
+				}
 				addCRIPodCPUStats(ps, criSandboxStat)
 				addCRIPodMemoryStats(ps, criSandboxStat)
 				result = append(result, *ps)
