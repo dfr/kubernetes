@@ -1,5 +1,5 @@
-//go:build !linux && !freebsd
-// +build !linux,!freebsd
+//go:build freebsd
+// +build freebsd
 
 /*
 Copyright 2015 The Kubernetes Authors.
@@ -20,17 +20,39 @@ limitations under the License.
 package emptydir
 
 import (
+	"bytes"
+	"fmt"
+
+	"golang.org/x/sys/unix"
 	"k8s.io/apimachinery/pkg/api/resource"
+	"k8s.io/klog/v2"
 	"k8s.io/mount-utils"
 
-	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/core/v1"
 )
 
-// realMountDetector pretends to implement mediumer.
+// realMountDetector implements mountDetector in terms of syscalls.
 type realMountDetector struct {
 	mounter mount.Interface
 }
 
 func (m *realMountDetector) GetMountMedium(path string, requestedMedium v1.StorageMedium) (v1.StorageMedium, bool, *resource.Quantity, error) {
-	return v1.StorageMediumDefault, false, nil, nil
+	klog.V(5).Infof("Determining mount medium of %v", path)
+	notMnt, err := m.mounter.IsLikelyNotMountPoint(path)
+	if err != nil {
+		return v1.StorageMediumDefault, false, nil, fmt.Errorf("IsLikelyNotMountPoint(%q): %v", path, err)
+	}
+
+	buf := unix.Statfs_t{}
+	if err := unix.Statfs(path, &buf); err != nil {
+		return v1.StorageMediumDefault, false, nil, fmt.Errorf("statfs(%q): %v", path, err)
+	}
+
+	klog.V(3).Infof("Statfs_t of %v: %+v", path, buf)
+	fsType := string(buf.Fstypename[:bytes.IndexByte(buf.Fstypename[:], 0)])
+
+	if fsType == "tmpfs" {
+		return v1.StorageMediumMemory, !notMnt, nil, nil
+	}
+	return v1.StorageMediumDefault, !notMnt, nil, nil
 }
