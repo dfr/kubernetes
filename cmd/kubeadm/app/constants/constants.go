@@ -34,8 +34,6 @@ import (
 )
 
 const (
-	// KubernetesDir is the directory Kubernetes owns for storing various configuration files
-	KubernetesDir = "/etc/kubernetes"
 	// ManifestsSubDirName defines directory name to store manifests
 	ManifestsSubDirName = "manifests"
 	// TempDirForKubeadm defines temporary directory for kubeadm
@@ -298,9 +296,6 @@ const (
 
 	// KubeletBaseConfigurationConfigMapKey specifies in what ConfigMap key the initial remote configuration of kubelet should be stored
 	KubeletBaseConfigurationConfigMapKey = "kubelet"
-
-	// KubeletRunDirectory specifies the directory where the kubelet runtime information is stored.
-	KubeletRunDirectory = "/var/lib/kubelet"
 
 	// KubeletConfigurationFileName specifies the file name on the node which stores initial remote configuration of kubelet
 	// This file should exist under KubeletRunDirectory

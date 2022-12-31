@@ -111,6 +111,6 @@ spec:
       tolerations:
       - operator: Exists
       nodeSelector:
-        kubernetes.io/os: linux
+        kubernetes.io/os: {{ .ProxyOS }}
 `
 )
