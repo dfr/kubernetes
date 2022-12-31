@@ -1,4 +1,4 @@
-//go:build !windows && !freebsd
+//go:build freebsd
 
 /*
 Copyright 2021 The Kubernetes Authors.
@@ -16,11 +16,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package v1beta3
+package v1beta4
 
 const (
 	// DefaultCACertPath defines default location of CA certificate on Linux
-	DefaultCACertPath = "/etc/kubernetes/pki/ca.crt"
+	DefaultCACertPath = "/usr/local/etc/kubernetes/pki/ca.crt"
 	// DefaultContainerRuntimeURLScheme defines default socket url prefix
 	DefaultContainerRuntimeURLScheme = "unix"
+	// DefaultCertificatesDir defines default certificate directory
+	DefaultCertificatesDir = "/usr/local/etc/kubernetes/pki"
+	// DefaultManifestsDir defines default manifests directory
+	DefaultManifestsDir = "/usr/local/etc/kubernetes/manifests"
+	// DefaultEtcdDataDir defines default location of etcd where static pods will save data to
+	DefaultEtcdDataDir = "/var/db/etcd"
 )

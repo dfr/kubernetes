@@ -80,6 +80,15 @@ func runCleanupNode(c workflow.RunData) error {
 	}
 
 	if !r.DryRun() {
+		klog.V(1).Info("[reset] Removing Kubernetes-managed containers")
+		if err := removeContainers(r.CRISocketPath()); err != nil {
+			klog.Warningf("[reset] Failed to remove containers: %v\n", err)
+		}
+	} else {
+		fmt.Println("[reset] Would remove Kubernetes-managed containers")
+	}
+
+	if !r.DryRun() {
 		// In case KubeletRunDirectory holds a symbolic link, evaluate it.
 		// This would also throw an error if the directory does not exist.
 		kubeletRunDirectory, err := filepath.EvalSymlinks(kubeadmconstants.KubeletRunDirectory)

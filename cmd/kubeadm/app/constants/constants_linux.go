@@ -1,5 +1,3 @@
-//go:build windows
-
 /*
 Copyright 2019 The Kubernetes Authors.
 
@@ -21,17 +19,6 @@ package constants
 const (
 	// KubernetesDir is the directory Kubernetes owns for storing various configuration files
 	KubernetesDir = "/etc/kubernetes"
-
-	// CRISocketContainerd is the containerd CRI endpoint
-	CRISocketContainerd = "npipe:////./pipe/containerd-containerd"
-	// CRISocketCRIO is the cri-o CRI endpoint
-	// NOTE: this is a placeholder as CRI-O does not support Windows
-	CRISocketCRIO = "npipe:////./pipe/cri-o"
-	// CRISocketDocker is the cri-dockerd CRI endpoint
-	CRISocketDocker = "npipe:////./pipe/cri-dockerd"
-
-	// DefaultCRISocket defines the default CRI socket
-	DefaultCRISocket = CRISocketContainerd
 
 	// KubeletRunDirectory specifies the directory where the kubelet runtime information is stored.
 	KubeletRunDirectory = "/var/lib/kubelet"
