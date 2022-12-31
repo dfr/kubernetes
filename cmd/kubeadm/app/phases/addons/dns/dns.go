@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"runtime"
 	"strings"
 
 	"github.com/coredns/corefile-migration/migration"
@@ -107,11 +108,13 @@ func coreDNSAddon(cfg *kubeadmapi.ClusterConfiguration, client clientset.Interfa
 	coreDNSDeploymentBytes, err := kubeadmutil.ParseTemplate(CoreDNSDeployment, struct {
 		DeploymentName, Image, ControlPlaneTaintKey string
 		Replicas                                    *int32
+		OS                                          string
 	}{
 		DeploymentName:       kubeadmconstants.CoreDNSDeploymentName,
 		Image:                images.GetDNSImage(cfg),
 		ControlPlaneTaintKey: kubeadmconstants.LabelNodeRoleControlPlane,
 		Replicas:             replicas,
+		OS:                   runtime.GOOS,
 	})
 	if err != nil {
 		return errors.Wrap(err, "error when parsing CoreDNS deployment template")

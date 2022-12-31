@@ -37,18 +37,11 @@ const (
 	DefaultClusterDNSIP = "10.96.0.10"
 	// DefaultKubernetesVersion defines default kubernetes version
 	DefaultKubernetesVersion = "stable-1"
-	// DefaultCertificatesDir defines default certificate directory
-	DefaultCertificatesDir = "/etc/kubernetes/pki"
 	// DefaultImageRepository defines default image registry
 	// (previously this defaulted to k8s.gcr.io)
 	DefaultImageRepository = "registry.k8s.io"
-	// DefaultManifestsDir defines default manifests directory
-	DefaultManifestsDir = "/etc/kubernetes/manifests"
 	// DefaultClusterName defines the default cluster name
 	DefaultClusterName = "kubernetes"
-
-	// DefaultEtcdDataDir defines default location of etcd where static pods will save data to
-	DefaultEtcdDataDir = "/var/lib/etcd"
 	// DefaultProxyBindAddressv4 is the default bind address when the advertise address is v4
 	DefaultProxyBindAddressv4 = "0.0.0.0"
 	// DefaultProxyBindAddressv6 is the default bind address when the advertise address is v6

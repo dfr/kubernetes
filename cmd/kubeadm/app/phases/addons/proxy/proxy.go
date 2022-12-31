@@ -21,6 +21,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"runtime"
 
 	apps "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -246,10 +247,11 @@ func createKubeProxyConfigMap(cfg *kubeadmapi.ClusterConfiguration, localEndpoin
 }
 
 func createKubeProxyAddon(cfg *kubeadmapi.ClusterConfiguration, client clientset.Interface, printManifest bool) ([]byte, error) {
-	daemonSetbytes, err := kubeadmutil.ParseTemplate(KubeProxyDaemonSet19, struct{ Image, ProxyConfigMap, ProxyConfigMapKey string }{
+	daemonSetbytes, err := kubeadmutil.ParseTemplate(KubeProxyDaemonSet19, struct{ Image, ProxyConfigMap, ProxyConfigMapKey, ProxyOS string }{
 		Image:             images.GetKubernetesImage(constants.KubeProxy, cfg),
 		ProxyConfigMap:    constants.KubeProxyConfigMap,
 		ProxyConfigMapKey: constants.KubeProxyConfigMapKey,
+		ProxyOS:           runtime.GOOS,
 	})
 	if err != nil {
 		return []byte(""), errors.Wrap(err, "error when parsing kube-proxy daemonset template")

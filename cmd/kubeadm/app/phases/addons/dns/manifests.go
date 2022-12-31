@@ -95,7 +95,7 @@ spec:
       - key: {{ .ControlPlaneTaintKey }}
         effect: NoSchedule
       nodeSelector:
-        kubernetes.io/os: linux
+        kubernetes.io/os: {{ .OS }}
       containers:
       - name: coredns
         image: {{ .Image }}
@@ -143,11 +143,11 @@ spec:
             scheme: HTTP
         securityContext:
           allowPrivilegeEscalation: false
-          capabilities:
-            add:
-            - NET_BIND_SERVICE
-            drop:
-            - ALL
+          #capabilities:
+          #  add:
+          #  - NET_BIND_SERVICE
+          #  drop:
+          #  - ALL
           readOnlyRootFilesystem: true
       dnsPolicy: Default
       volumes:
