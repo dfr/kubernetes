@@ -24,6 +24,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/moby/sys/mountinfo"
 	"golang.org/x/sys/unix"
 	"k8s.io/klog/v2"
 )
