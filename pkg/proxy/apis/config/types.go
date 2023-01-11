@@ -261,6 +261,7 @@ const (
 	ProxyModeIPVS        ProxyMode = "ipvs"
 	ProxyModeNFTables    ProxyMode = "nftables"
 	ProxyModeKernelspace ProxyMode = "kernelspace"
+	ProxyModePF          ProxyMode = "pf"
 )
 
 func (m *ProxyMode) Set(s string) error {
