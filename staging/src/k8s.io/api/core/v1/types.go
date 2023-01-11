@@ -2637,11 +2637,6 @@ type ResourceClaim struct {
 	Name string `json:"name" protobuf:"bytes,1,opt,name=name"`
 }
 
-const (
-	// TerminationMessagePathDefault means the default path to capture the application termination message running in a container
-	TerminationMessagePathDefault string = "/dev/termination-log"
-)
-
 // A single application container that you want to run within a pod.
 type Container struct {
 	// Name of the container specified as a DNS_LABEL.
