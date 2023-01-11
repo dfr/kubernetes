@@ -237,6 +237,7 @@ const (
 	ProxyModeIPTables    ProxyMode = "iptables"
 	ProxyModeIPVS        ProxyMode = "ipvs"
 	ProxyModeKernelspace ProxyMode = "kernelspace"
+	ProxyModePF          ProxyMode = "pf"
 )
 
 // LocalMode represents modes to detect local traffic from the node

@@ -189,6 +189,10 @@ func validateProxyMode(mode kubeproxyconfig.ProxyMode, fldPath *field.Path) fiel
 		return validateProxyModeWindows(mode, fldPath)
 	}
 
+	if runtime.GOOS == "freebsd" {
+		return validateProxyModeFreeBSD(mode, fldPath)
+	}
+
 	return validateProxyModeLinux(mode, fldPath)
 }
 
@@ -209,6 +213,19 @@ func validateProxyModeLinux(mode kubeproxyconfig.ProxyMode, fldPath *field.Path)
 func validateProxyModeWindows(mode kubeproxyconfig.ProxyMode, fldPath *field.Path) field.ErrorList {
 	validModes := sets.New[string](
 		string(kubeproxyconfig.ProxyModeKernelspace),
+	)
+
+	if mode == "" || validModes.Has(string(mode)) {
+		return nil
+	}
+
+	errMsg := fmt.Sprintf("must be %s or blank (blank means the most-available proxy [currently 'kernelspace'])", strings.Join(sets.List(validModes), ", "))
+	return field.ErrorList{field.Invalid(fldPath.Child("ProxyMode"), string(mode), errMsg)}
+}
+
+func validateProxyModeFreeBSD(mode kubeproxyconfig.ProxyMode, fldPath *field.Path) field.ErrorList {
+	validModes := sets.New[string](
+		string(kubeproxyconfig.ProxyModePF),
 	)
 
 	if mode == "" || validModes.Has(string(mode)) {
