@@ -37,8 +37,6 @@ const (
 	NamespacePublic = "kube-public"
 	// NamespaceNodeLease is the namespace where we place node lease objects (used for node heartbeats)
 	NamespaceNodeLease = "kube-node-lease"
-	// TerminationMessagePathDefault means the default path to capture the application termination message running in a container
-	TerminationMessagePathDefault = "/dev/termination-log"
 )
 
 // Volume represents a named volume in a pod that may be accessed by any containers in the pod.
