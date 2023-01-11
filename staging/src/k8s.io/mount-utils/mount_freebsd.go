@@ -33,9 +33,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/fs"
 	"strings"
 	"unsafe"
 
+	"github.com/moby/sys/mountinfo"
 	"golang.org/x/sys/unix"
 )
 
@@ -172,8 +174,22 @@ func (mounter *Mounter) CanSafelySkipMountPointCheck() bool {
 // IsMountPoint determines if a directory is a mountpoint.
 // It always returns an error on unsupported platforms.
 func (mounter *Mounter) IsMountPoint(file string) (bool, error) {
-	//return false, errUnsupported
-	return false, errors.New("mount.IsMountPoint unsupported")
+	isMnt, isMntErr := mountinfo.Mounted(file)
+	if isMntErr == nil {
+		return isMnt, nil
+	}
+	if isMntErr != nil {
+		if errors.Is(isMntErr, fs.ErrNotExist) {
+			return false, fs.ErrNotExist
+		}
+		// We were not allowed to do the simple stat() check, e.g. on NFS with
+		// root_squash. Fall back to /proc/mounts check below when
+		// fs.ErrPermission is returned.
+		if !errors.Is(isMntErr, fs.ErrPermission) {
+			return false, isMntErr
+		}
+	}
+	return false, nil
 }
 
 // GetMountRefs always returns an error on unsupported platforms
