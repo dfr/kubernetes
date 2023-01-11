@@ -509,14 +509,14 @@ func (kl *Kubelet) GenerateRunContainerOptions(ctx context.Context, pod *v1.Pod,
 
 	// adding TerminationMessagePath on Windows is only allowed if ContainerD is used. Individual files cannot
 	// be mounted as volumes using Docker for Windows.
-	if len(container.TerminationMessagePath) != 0 {
+	/*if len(container.TerminationMessagePath) != 0 {
 		p := kl.getPodContainerDir(pod.UID, container.Name)
 		if err := os.MkdirAll(p, 0750); err != nil {
 			klog.ErrorS(err, "Error on creating dir", "path", p)
 		} else {
 			opts.PodContainerDir = p
 		}
-	}
+	}*/
 
 	return opts, cleanupAction, nil
 }
