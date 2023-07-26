@@ -144,6 +144,9 @@ kube::util::host_os() {
     Darwin)
       host_os=darwin
       ;;
+    FreeBSD)
+      host_os=freebsd
+      ;;
     Linux)
       host_os=linux
       ;;
