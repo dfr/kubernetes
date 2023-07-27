@@ -1,5 +1,5 @@
-//go:build !linux && !windows && !freebsd
-// +build !linux,!windows,!freebsd
+//go:build freebsd
+// +build freebsd
 
 /*
 Copyright 2018 The Kubernetes Authors.
@@ -27,6 +27,14 @@ import (
 
 // applyPlatformSpecificContainerConfig applies platform specific configurations to runtimeapi.ContainerConfig.
 func (m *kubeGenericRuntimeManager) applyPlatformSpecificContainerConfig(config *runtimeapi.ContainerConfig, container *v1.Container, pod *v1.Pod, uid *int64, username string, nsTarget *kubecontainer.ContainerID) error {
+	// Add a security context to support privileged containers
+	sc, err := m.determineEffectiveSecurityContext(pod, container, uid, username)
+	if err != nil {
+		return err
+	}
+	config.Linux = &runtimeapi.LinuxContainerConfig{
+		SecurityContext: sc,
+	}
 	return nil
 }
 
