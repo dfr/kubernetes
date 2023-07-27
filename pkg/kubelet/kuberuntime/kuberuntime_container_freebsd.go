@@ -1,4 +1,4 @@
-//go:build !linux && !windows && !freebsd
+//go:build freebsd
 
 /*
 Copyright 2018 The Kubernetes Authors.
@@ -21,7 +21,7 @@ package kuberuntime
 import (
 	"context"
 
-	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/core/v1"
 	runtimeapi "k8s.io/cri-api/pkg/apis/runtime/v1"
 	"k8s.io/kubernetes/pkg/kubelet/cm"
 	kubecontainer "k8s.io/kubernetes/pkg/kubelet/container"
@@ -30,11 +30,19 @@ import (
 
 // applyPlatformSpecificContainerConfig applies platform specific configurations to runtimeapi.ContainerConfig.
 func (m *kubeGenericRuntimeManager) applyPlatformSpecificContainerConfig(ctx context.Context, config *runtimeapi.ContainerConfig, container *v1.Container, pod *v1.Pod, uid *int64, username string, nsTarget *kubecontainer.ContainerID) error {
+	// Add a security context to support privileged containers
+	sc, err := m.determineEffectiveSecurityContext(ctx, pod, container, uid, username)
+	if err != nil {
+		return err
+	}
+	config.Linux = &runtimeapi.LinuxContainerConfig{
+		SecurityContext: sc,
+	}
 	return nil
 }
 
 // generateContainerResources generates platform specific container resources config for runtime
-func (m *kubeGenericRuntimeManager) generateContainerResources(ctx context.Context, pod *v1.Pod, container *v1.Container) *runtimeapi.ContainerResources {
+func (m *kubeGenericRuntimeManager) generateContainerResources(_ context.Context, pod *v1.Pod, container *v1.Container) *runtimeapi.ContainerResources {
 	return nil
 }
 
