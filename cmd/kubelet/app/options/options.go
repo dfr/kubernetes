@@ -41,8 +41,6 @@ import (
 	utilflag "k8s.io/kubernetes/pkg/util/flag"
 )
 
-const defaultRootDir = "/var/lib/kubelet"
-
 // KubeletFlags contains configuration flags for the Kubelet.
 // A configuration field should go in KubeletFlags instead of KubeletConfiguration if any of these are true:
 //   - its value will never, or cannot safely be changed during the lifetime of a node, or
@@ -142,7 +140,7 @@ type KubeletFlags struct {
 func NewKubeletFlags() *KubeletFlags {
 	return &KubeletFlags{
 		ContainerRuntimeOptions: *NewContainerRuntimeOptions(),
-		CertDirectory:           "/var/lib/kubelet/pki",
+		CertDirectory:           filepath.Join(defaultRootDir, "pki"),
 		RootDirectory:           filepath.Clean(defaultRootDir),
 		MaxContainerCount:       -1,
 		MaxPerPodContainerCount: 1,
